@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket.io Chat</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+
+      body {
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .chat-container {
+        width: 100%;
+        max-width: 600px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+      }
+
+      h1 {
+        background-color: #007bff;
+        color: #fff;
+        padding: 15px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 500;
+      }
+
+      #messages {
+        flex: 1;
+        list-style-type: none;
+        padding: 20px;
+        overflow-y: auto;
+        background-color: #fafafa;
+      }
+
+      #messages li {
+        margin-bottom: 10px;
+        padding: 10px 15px;
+        background-color: #e9ecef;
+        border-radius: 15px;
+        max-width: 70%;
+        word-wrap: break-word;
+        font-size: 1rem;
+        line-height: 1.4;
+        position: relative;
+        align-self: flex-start;
+      }
+
+      #form {
+        display: flex;
+        padding: 15px;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+      }
+
+      #input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        font-size: 1rem;
+        outline: none;
+        margin-right: 10px;
+        transition: border-color 0.3s;
+      }
+
+      #input:focus {
+        border-color: #007bff;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      @media (max-width: 500px) {
+        .chat-container {
+          height: 100vh;
+          border-radius: 0;
+        }
+
+        h1 {
+          font-size: 1.2rem;
+        }
+
+        #input {
+          font-size: 0.9rem;
+        }
+
+        button {
+          font-size: 0.9rem;
+          padding: 8px 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <h1>Socket.io Chat</h1>
+      <ul id="messages"></ul>
+      <form id="form">
+        <input
+          type="text"
+          id="input"
+          autocomplete="off"
+          placeholder="Type a message..."
+        />
+        <button>Send</button>
+      </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+
+        if (!form || !input) {
+          console.error("Form or input not found");
+          return;
+        }
+
+        const socket = io();
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (input.value) {
+            socket.emit("message", input.value);
+            input.value = "";
+          }
+        });
+
+        socket.on("message", (message) => {
+          const item = document.createElement("li");
+          item.textContent = message;
+          document.getElementById("messages").appendChild(item);
+          // Auto-scroll to the latest message
+          const messages = document.getElementById("messages");
+          messages.scrollTop = messages.scrollHeight;
+        });
+
+        socket.on("connect_error", (err) => {
+          console.error("Connection error:", err.message);
+          const item = document.createElement("li");
+          item.textContent = "Failed to connect to server";
+          item.style.backgroundColor = "#f8d7da";
+          item.style.color = "#721c24";
+          document.getElementById("messages").appendChild(item);
+        });
+      });
+    </script>
+  </body>
+</html>

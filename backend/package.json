@@ -17,7 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "prisma": "^6.8.2",
+    "socket.io": "^4.8.1",
     "zod": "^3.25.23"
   },
   "devDependencies": {
@@ -25,6 +25,7 @@
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.21",
     "nodemon": "^3.1.10",
+    "prisma": "^6.8.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
