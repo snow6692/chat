@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
-
+import userRoute from "./routes/user.route";
+import authRoute from "./routes/auth.route";
 dotenv.config();
 
 const app = express();
@@ -44,6 +45,9 @@ io.on("connect", (socket) => {
 server.on("error", (err) => {
   console.error("Server error:", err);
 });
+
+app.use("/api/user", userRoute);
+app.use("/api/auth", authRoute);
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
